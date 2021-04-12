@@ -8,7 +8,7 @@ plugins {
     signing
 }
 
-group = "br.com.leandro"
+group = "io.getstream"
 version = "0.1.0-SNAPSHOT"
 
 repositories {
@@ -19,14 +19,12 @@ repositories {
 val dokkaVersion: String by project
 
 dependencies {
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.0")
-    implementation(kotlin("stdlib"))
     compileOnly("org.jetbrains.dokka:dokka-core:$dokkaVersion")
+    implementation(kotlin("stdlib"))
     implementation("org.jetbrains.dokka:dokka-base:$dokkaVersion")
 
     testImplementation(kotlin("test-junit"))
     testImplementation("org.jetbrains.dokka:dokka-test-api:$dokkaVersion")
-
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
 }
 
