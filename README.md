@@ -1,6 +1,6 @@
-# Dokkassauros
+# Dokkassaurosu
 
-This plugin creates Markdown files that can be used with Docussauros. Use this plugin in conjunction with [DokkasaurosSidebar](https://github.com/GetStream/DokkasaurosSidebar) to generated the page. 
+This plugin creates Markdown files that can be used with Docussauros. Use this plugin in conjunction with [DokkasaurusSidebar](https://github.com/GetStream/DokkasaurusSidebar) to generated the page. 
 
 ## Installing
 
@@ -13,7 +13,7 @@ At the momment this plugin is not deployed yet at maven central. So you use `mav
 Then add `mavenLocal()` to your project and include it to your project:
 
 ```
-dokkaPlugin("br.com.leandro:dokkasaurus:0.1.3-SNAPSHOT")
+dokkaPlugin("io.getstream:dokkasaurus:0.1.4-SNAPSHOT")
 ```
 
 ## Running 
