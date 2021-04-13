@@ -1,4 +1,4 @@
-package io.getstream.dokkasauros.utils
+package io.getstream.dokkasaurus.utils
 
 import org.junit.Test
 import org.junit.jupiter.api.Assertions

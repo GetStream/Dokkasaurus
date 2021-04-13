@@ -1,4 +1,4 @@
-package io.getstream.dokkasauros.renderer
+package io.getstream.dokkasaurus.renderer
 
 import org.jetbrains.dokka.DokkaException
 import org.jetbrains.dokka.base.renderers.DefaultRenderer
@@ -7,7 +7,7 @@ import org.jetbrains.dokka.base.resolvers.local.LocationProvider
 import org.jetbrains.dokka.model.DisplaySourceSet
 import org.jetbrains.dokka.pages.*
 import org.jetbrains.dokka.plugability.DokkaContext
-import io.getstream.dokkasauros.utils.scapeTags
+import io.getstream.dokkasaurus.utils.scapeTags
 
 class DocusaurusRenderer(
     context: DokkaContext,

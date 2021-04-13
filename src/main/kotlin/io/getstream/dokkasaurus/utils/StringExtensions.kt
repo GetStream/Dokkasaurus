@@ -1,4 +1,4 @@
-package io.getstream.dokkasauros.utils
+package io.getstream.dokkasaurus.utils
 
 internal fun String.scapeTags(): String {
     var insideTagBegin = false

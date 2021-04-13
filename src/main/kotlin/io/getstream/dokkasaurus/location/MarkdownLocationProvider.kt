@@ -1,4 +1,4 @@
-package io.getstream.dokkasauros.location
+package io.getstream.dokkasaurus.location
 
 import org.jetbrains.dokka.base.resolvers.local.DokkaLocationProvider
 import org.jetbrains.dokka.base.resolvers.local.LocationProviderFactory

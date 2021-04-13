@@ -1,4 +1,4 @@
-package io.getstream.dokkasauros
+package io.getstream.dokkasaurus
 
 import org.jetbrains.dokka.CoreExtensions
 import org.jetbrains.dokka.base.DokkaBase
@@ -7,8 +7,8 @@ import org.jetbrains.dokka.base.renderers.RootCreator
 import org.jetbrains.dokka.base.resolvers.shared.RecognizedLinkFormat
 import org.jetbrains.dokka.plugability.DokkaPlugin
 import org.jetbrains.dokka.transformers.pages.PageTransformer
-import io.getstream.dokkasauros.location.MarkdownLocationProvider
-import io.getstream.dokkasauros.renderer.DocusaurusRenderer
+import io.getstream.dokkasaurus.location.MarkdownLocationProvider
+import io.getstream.dokkasaurus.renderer.DocusaurusRenderer
 
 class DokkasaurusPlugin : DokkaPlugin() {
 
