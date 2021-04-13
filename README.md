@@ -1,4 +1,4 @@
-# Dokkassaurosu
+# Dokkassaurus
 
 This plugin creates Markdown files that can be used with Docussauros. Use this plugin in conjunction with [DokkasaurusSidebar](https://github.com/GetStream/DokkasaurusSidebar) to generated the page. 
 
