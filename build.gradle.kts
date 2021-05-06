@@ -3,13 +3,13 @@ import java.net.URI
 
 plugins {
     kotlin("jvm") version "1.4.32"
-    id("org.jetbrains.dokka") version "1.4.30" // Used to create a javadoc jar
+    id("org.jetbrains.dokka") version "1.4.32" // Used to create a javadoc jar
     `maven-publish`
     signing
 }
 
 group = "io.getstream"
-version = "0.1.0-SNAPSHOT"
+version = "0.1.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
