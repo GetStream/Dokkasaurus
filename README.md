@@ -28,7 +28,7 @@ Run for single module projects:
 And for multi modiule projects:
 
 ```
-./gradlew dokkaHtmlMultimodule
+./gradlew dokkaHtmlMultiModule
 ```
 
 It will generate your documentation in your `build/dokka/html` file.
