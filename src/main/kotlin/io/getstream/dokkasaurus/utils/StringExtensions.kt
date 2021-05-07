@@ -42,3 +42,7 @@ internal fun String.scapeTags(): String {
         }
     }
 }
+
+internal fun String.simpleScapeTags(): String {
+    return this.replace("<", "&lt;").replace(">", "&gt;")
+}

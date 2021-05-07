@@ -8,6 +8,7 @@ import org.jetbrains.dokka.model.DisplaySourceSet
 import org.jetbrains.dokka.pages.*
 import org.jetbrains.dokka.plugability.DokkaContext
 import io.getstream.dokkasaurus.utils.scapeTags
+import io.getstream.dokkasaurus.utils.simpleScapeTags
 
 class DocusaurusRenderer(
     context: DokkaContext,
@@ -140,7 +141,7 @@ class DocusaurusRenderer(
             val decorators = parseDecorators(textNode.style)
             append(textNode.text.takeWhile { it == ' ' })
             append(decorators)
-            append(textNode.text.scapeTags().trim())
+            append(textNode.text.simpleScapeTags().trim())
             append(decorators.reversed())
             append(textNode.text.takeLastWhile { it == ' ' })
         }
@@ -222,6 +223,11 @@ class DocusaurusRenderer(
     private fun StringBuilder.buildDocusaurusHeader(title: String = "defaultTitle") {
         append("---\n")
         append("title: $title\n")
+
+        if(title == "index") {
+            append("sidebar_position: 1\n")
+        }
+
         append("---\n")
     }
 

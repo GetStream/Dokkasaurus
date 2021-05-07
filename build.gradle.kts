@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "io.getstream"
-version = "0.1.1-SNAPSHOT"
+version = "0.1.6-SNAPSHOT"
 
 repositories {
     mavenCentral()

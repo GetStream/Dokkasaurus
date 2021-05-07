@@ -9,16 +9,16 @@ internal class StringExtensionsTest {
     fun `tags should be scaped correctly with simple tags`() {
         val simpleTag = "List<Something>"
 
-        Assertions.assertEquals(simpleTag.scapeTags(), "List`<`Something`>`")
+        Assertions.assertEquals("List&lt;Something&gt;", simpleTag.simpleScapeTags())
     }
 
     @Test
     fun `tags should be scaped correctly with complex tags`() {
-        val simpleTag = "List<Map<String, List<String>>>"
+        val complexTag = "List<Map<String, List<String>>>"
 
         Assertions.assertEquals(
-            simpleTag.scapeTags(),
-            "List`<`Map`<`String, List`<`String`>>>`"
+            "List&lt;Map&lt;String, List&lt;String&gt;&gt;&gt;",
+            complexTag.simpleScapeTags()
         )
     }
 }
