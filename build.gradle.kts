@@ -6,17 +6,18 @@ plugins {
     id("org.jetbrains.dokka") version "1.4.32" // Used to create a javadoc jar
     `maven-publish`
     signing
+    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
 
 group = "io.getstream"
-version = "0.1.6-SNAPSHOT"
+version = "0.1.7-SNAPSHOT"
+val dokkaVersion: String by project
+val publicationName="Dokkasaurus"
 
 repositories {
     mavenCentral()
     jcenter()
 }
-
-val dokkaVersion: String by project
 
 dependencies {
     compileOnly("org.jetbrains.dokka:dokka-core:$dokkaVersion")
@@ -51,66 +52,99 @@ java {
 
 publishing {
     publications {
-        val dokkaTemplatePlugin by creating(MavenPublication::class) {
+        val dokkasaurusPlugin by creating(MavenPublication::class) {
             artifactId = project.name
             from(components["java"])
             artifact(javadocJar.get())
 
             pom {
-                name.set("Dokka template plugin")
-                description.set("This is a plugin template for Dokka")
+                name.set(publicationName)
+                description.set("A plugin for Dokka to generate markdown files compatible with Docusaurus")
                 url.set("https://github.com/Kotlin/dokka-plugin-template/")
 
                 licenses {
                     license {
-                        name.set("The Apache Software License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+
+                        name.set("Stream License")
+                        url.set("https://github.com/GetStream/Dokkasaurus/blob/master/LICENSE")
                         distribution.set("repo")
                     }
                 }
 
                 developers {
                     developer {
-                        id.set("JetBrains")
-                        name.set("JetBrains Team")
-                        organization.set("JetBrains")
-                        organizationUrl.set("http://www.jetbrains.com")
+                        id.set("leandroBorgesFerreira")
+                        name.set("Leandro Borges Ferreira")
+                        email.set("leandro@getstream.io")
+                        organization.set("Stream")
+                        organizationUrl.set("https://getstream.io/")
+                    }
+                    developer {
+                        id.set("jcminarro")
+                        name.set("Jc Miñarro")
+                        organization.set("Stream")
+                        email.set("josecarlos@getstream.io")
+                        organizationUrl.set("https://getstream.io/")
+                    }
+                    developer {
+                        id.set("adasiewiczr")
+                        name.set("Rafal Adasiewicz")
+                        organization.set("Stream")
+                        email.set("rafal@getstream.io")
+                        organizationUrl.set("https://getstream.io/")
+                    }
+                    developer {
+                        id.set("ogkuzmin")
+                        name.set("Oleg Kuzmin")
+                        organization.set("Stream")
+                        email.set("oleg@getstream.io")
+                        organizationUrl.set("https://getstream.io/")
+                    }
+                    developer {
+                        id.set("zsmb13")
+                        name.set("Márton Braun")
+                        organization.set("Stream")
+                        email.set("marton@getstream.io")
+                        organizationUrl.set("https://getstream.io/")
+                    }
+                    developer {
+                        id.set("bychkovdmitry")
+                        name.set("Dmitrii Bychkov")
+                        organization.set("Stream")
+                        email.set("dmitrii@getstream.io")
+                        organizationUrl.set("https://getstream.io/")
                     }
                 }
 
                 scm {
-                    connection.set("scm:git:git://github.com/Kotlin/dokka-plugin-template.git")
-                    url.set("https://github.com/Kotlin/dokka-plugin-template/tree/master")
+                    connection.set("scm:git:github.com/getstream/dokkasaurus.git")
+                    url.set("https://github.com/getstream/dokkasaurus/tree/master")
                 }
             }
         }
-        signPublicationsIfKeyPresent(dokkaTemplatePlugin)
-    }
 
-    repositories {
-        maven {
-            url = URI("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-            credentials {
-                username = System.getenv("SONATYPE_USER")
-                password = System.getenv("SONATYPE_PASSWORD")
-            }
-        }
+        signPublicationsIfKeyPresent(dokkasaurusPlugin)
     }
 }
 
 fun Project.signPublicationsIfKeyPresent(publication: MavenPublication) {
-    val signingKeyId: String? = System.getenv("SIGN_KEY_ID")
     val signingKey: String? = System.getenv("SIGN_KEY")
     val signingKeyPassphrase: String? = System.getenv("SIGN_KEY_PASSPHRASE")
 
     if (!signingKey.isNullOrBlank()) {
         extensions.configure<SigningExtension>("signing") {
-            if (signingKeyId?.isNotBlank() == true) {
-                useInMemoryPgpKeys(signingKeyId, signingKey, signingKeyPassphrase)
-            } else {
-                useInMemoryPgpKeys(signingKey, signingKeyPassphrase)
-            }
+            useInMemoryPgpKeys(signingKey, signingKeyPassphrase)
             sign(publication)
+        }
+    }
+}
+
+// Set up Sonatype repository
+nexusPublishing {
+    repositories {
+        sonatype {
+            username.set(System.getenv("OSSRH_USERNAME"))
+            password.set(System.getenv("OSSRH_PASSWORD"))
         }
     }
 }
