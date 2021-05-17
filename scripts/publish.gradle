@@ -1,0 +1,137 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+apply plugin: 'org.jetbrains.dokka'
+
+// Create variables with empty default values
+ext["ossrhUsername"] = ''
+ext["ossrhPassword"] = ''
+ext["sonatypeStagingProfileId"] = ''
+ext["signing.keyId"] = ''
+ext["signing.password"] = ''
+ext["signing.secretKeyRingFile"] = ''
+
+def PUBLISH_VERSION = "0.1.7"
+def PUBLISH_GROUP_ID = "io.getstream"
+def PUBLISH_ARTIFACT_ID = "Dokkasaurus"
+
+File secretPropsFile = project.rootProject.file('local.properties')
+if (secretPropsFile.exists()) {
+    // Read local.properties file first if it exists
+    Properties p = new Properties()
+    new FileInputStream(secretPropsFile).withCloseable { is -> p.load(is) }
+    p.each { name, value -> ext[name] = value }
+} else {
+    // Use system environment variables
+    ext["ossrhUsername"] = System.getenv('OSSRH_USERNAME')
+    ext["ossrhPassword"] = System.getenv('OSSRH_PASSWORD')
+    ext["sonatypeStagingProfileId"] = System.getenv('SONATYPE_STAGING_PROFILE_ID')
+    ext["signing.keyId"] = System.getenv('SIGNING_KEY_ID')
+    ext["signing.password"] = System.getenv('SIGNING_PASSWORD')
+    ext["signing.secretKeyRingFile"] = System.getenv('SIGNING_SECRET_KEY_RING_FILE')
+}
+
+// Set up Sonatype repository
+nexusPublishing {
+    repositories {
+        sonatype {
+            stagingProfileId = sonatypeStagingProfileId
+            username = ossrhUsername
+            password = ossrhPassword
+        }
+    }
+}
+
+task androidSourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from sourceSets.main.java.srcDirs
+    from sourceSets.main.kotlin.srcDirs
+}
+
+task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
+    archiveClassifier.set('javadoc')
+    from dokkaJavadoc.outputDirectory
+}
+
+artifacts {
+    archives javadocJar
+}
+
+group = PUBLISH_GROUP_ID
+version = PUBLISH_VERSION
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId PUBLISH_GROUP_ID
+                artifactId PUBLISH_ARTIFACT_ID
+                version PUBLISH_VERSION
+                artifact("${buildDir}/libs/dokkasaurus-${version}.jar")
+                artifact javadocJar
+
+                pom {
+                    name = PUBLISH_ARTIFACT_ID
+                    description = 'A plugin for Dokka to generate markdown files compatible with Docusaurus'
+                    url = 'https://github.com/getstream/dokkasaurus'
+                    licenses {
+                        license {
+                            name = 'Stream License'
+                            url = 'https://github.com/GetStream/dokkasaurus/blob/main/LICENSE'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'tschellenbach'
+                            name = 'Thierry Schellenbach'
+                            email = 'thierry@getstream.io'
+                        }
+                        developer {
+                            id = 'jcminarro'
+                            name = 'Jc Miñarro'
+                            email = 'josecarlos@getstream.io'
+                        }
+                        developer {
+                            id = 'samiuelson'
+                            name = 'Samuel Urbanowicz'
+                            email = 'samuel@getstream.io'
+                        }
+                        developer {
+                            id = 'adasiewiczr'
+                            name = 'Rafal Adasiewicz'
+                            email = 'rafal@getstream.io'
+                        }
+                        developer {
+                            id = 'ogkuzmin'
+                            name = 'Oleg Kuzmin'
+                            email = 'oleg@getstream.io'
+                        }
+                        developer {
+                            id = 'zsmb13'
+                            name = 'Márton Braun'
+                            email = 'marton@getstream.io'
+                        }
+                        developer {
+                            id = 'leandroBorgesFerreira'
+                            name = 'Leandro Borges Ferreira'
+                            email = 'leandro@getstream.io'
+                        }
+                        developer {
+                            id = 'bychkovdmitry'
+                            name = 'Dmitrii Bychkov'
+                            email = 'dmitrii@getstream.io'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:github.com/getstream/dokkasaurus.git'
+                        developerConnection = 'scm:git:ssh://github.com/getstream/dokkasaurus.git'
+                        url = 'https://github.com/getstream/dokkasaurus/tree/main'
+                    }
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications
+}
