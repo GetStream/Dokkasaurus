@@ -4,16 +4,10 @@ This plugin creates Markdown files that can be used with Docussauros. Use this p
 
 ## Installing
 
-At the momment this plugin is not deployed yet at maven central. So you use `mavenLocal()` to use this plugin.
+The plugin is deployed to MavenCentra. You need to add `mavenCentral()` to your project and include it to your project (in the module level):
 
 ```
-./gradlew assemble publishToMavenLocal
-```
-
-Then add `mavenLocal()` to your project and include it to your project (in the module level):
-
-```
-dokkaPlugin("io.getstream:dokkasaurus:0.1.4-SNAPSHOT")
+dokkaPlugin("io.getstream:dokkasaurus:0.1.7")
 ```
 
 For multi module projects, put the dokkaPlugin in every module that you would like
