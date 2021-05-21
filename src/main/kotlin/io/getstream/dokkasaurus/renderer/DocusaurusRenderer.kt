@@ -1,5 +1,6 @@
 package io.getstream.dokkasaurus.renderer
 
+import io.getstream.dokkasaurus.DokkasaurusPlugin
 import org.jetbrains.dokka.DokkaException
 import org.jetbrains.dokka.base.renderers.DefaultRenderer
 import org.jetbrains.dokka.base.renderers.isImage
@@ -9,6 +10,8 @@ import org.jetbrains.dokka.pages.*
 import org.jetbrains.dokka.plugability.DokkaContext
 import io.getstream.dokkasaurus.utils.scapeTags
 import io.getstream.dokkasaurus.utils.simpleScapeTags
+import org.jetbrains.dokka.plugability.plugin
+import org.jetbrains.dokka.plugability.query
 
 class DocusaurusRenderer(
     context: DokkaContext,
@@ -16,6 +19,8 @@ class DocusaurusRenderer(
 ) : DefaultRenderer<StringBuilder>(context) {
 
     private val isPartial = context.configuration.delayTemplateSubstitution
+
+    override val preprocessors = context.plugin<DokkasaurusPlugin>().query { preprocessors }
 
     override fun StringBuilder.buildHeader(level: Int, node: ContentHeader, content: StringBuilder.() -> Unit) {
         buildNewLine()
@@ -79,34 +84,34 @@ class DocusaurusRenderer(
         append("  \n")
     }
 
-//    override fun StringBuilder.buildPlatformDependent(
-//        content: PlatformHintedContent,
-//        pageContext: ContentPage,
-//        sourceSetRestriction: Set<DisplaySourceSet>?
-//    ) {
-//        buildPlatformDependentItem(content.inner, content.sourceSets, pageContext)
-//    }
+    override fun StringBuilder.buildPlatformDependent(
+        content: PlatformHintedContent,
+        pageContext: ContentPage,
+        sourceSetRestriction: Set<DisplaySourceSet>?
+    ) {
+        buildPlatformDependentItem(content.inner, content.sourceSets, pageContext)
+    }
 
-//    private fun StringBuilder.buildPlatformDependentItem(
-//        content: ContentNode,
-//        sourceSets: Set<DisplaySourceSet>,
-//        pageContext: ContentPage,
-//    ) {
-//        if (content is ContentGroup && content.children.firstOrNull { it is ContentTable } != null) {
-//            buildContentNode(content, pageContext, sourceSets)
-//        } else {
-//            val distinct = sourceSets.map {
-//                it to buildString { buildContentNode(content, pageContext, setOf(it)) }
-//            }.groupBy(Pair<DisplaySourceSet, String>::second, Pair<DisplaySourceSet, String>::first)
-//
-//            distinct.filter { it.key.isNotBlank() }.forEach { (text, platforms) ->
-//                append(" ")
-//                buildSourceSetTags(platforms.toSet())
-//                append(" $text ")
-//                buildNewLine()
-//            }
-//        }
-//    }
+    private fun StringBuilder.buildPlatformDependentItem(
+        content: ContentNode,
+        sourceSets: Set<DisplaySourceSet>,
+        pageContext: ContentPage,
+    ) {
+        if (content is ContentGroup && content.children.firstOrNull { it is ContentTable } != null) {
+            buildContentNode(content, pageContext, sourceSets)
+        } else {
+            val distinct = sourceSets.map {
+                it to buildString { buildContentNode(content, pageContext, setOf(it)) }
+            }.groupBy(Pair<DisplaySourceSet, String>::second, Pair<DisplaySourceSet, String>::first)
+
+            distinct.filter { it.key.isNotBlank() }.forEach { (text, platforms) ->
+                append(" ")
+                buildSourceSetTags(platforms.toSet())
+                append(" $text ")
+                buildNewLine()
+            }
+        }
+    }
 
     override fun StringBuilder.buildResource(node: ContentEmbeddedResource, pageContext: ContentPage) {
         if (node.isImage()) {
@@ -279,4 +284,7 @@ class DocusaurusRenderer(
             ?.substringAfterLast("/")
             ?.substringBeforeLast(".")
             ?: this.name
+
+    private fun StringBuilder.buildSourceSetTags(sourceSets: Set<DisplaySourceSet>) =
+        append(sourceSets.joinToString(prefix = "[", postfix = "]") { it.name })
 }
