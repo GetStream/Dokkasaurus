@@ -17,16 +17,6 @@ class DocusaurusRenderer(
 
     private val isPartial = context.configuration.delayTemplateSubstitution
 
-    override fun buildError(node: ContentNode) {
-        context.logger.warn("Docusaurus renderer has encountered problem. The unmatched node is $node")
-    }
-
-    override fun buildPage(page: ContentPage, content: (StringBuilder, ContentPage) -> Unit): String =
-        buildString {
-            buildDocusaurusHeader(page.title(locationProvider))
-            content(this, page)
-        }
-
     override fun StringBuilder.buildHeader(level: Int, node: ContentHeader, content: StringBuilder.() -> Unit) {
         buildNewLine()
         buildNewLine()
@@ -57,19 +47,66 @@ class DocusaurusRenderer(
         }
     }
 
-    override fun StringBuilder.buildNavigation(page: PageNode) {
-        locationProvider.ancestors(page).asReversed().forEach { node ->
-            append("/")
-            if (node.isNavigable) buildLink(node, page)
-            else append(node.name)
+    private fun StringBuilder.buildListItem(items: List<ContentNode>, pageContext: ContentPage) {
+        items.forEach {
+            if (it is ContentList) {
+                buildList(it, pageContext)
+            } else {
+                append("<li>")
+                append(buildString { it.build(this, pageContext, it.sourceSets) }.trim())
+                append("</li>")
+            }
         }
-
-        buildNewParagraph()
     }
+
+    //    override fun StringBuilder.buildDRILink(
+//        node: ContentDRILink,
+//        pageContext: ContentPage,
+//        sourceSetRestriction: Set<DisplaySourceSet>?
+//    ) {
+//        locationProvider.resolve(node.address, node.sourceSets, pageContext)?.let {
+//            buildLink(it) {
+//                buildText(node.children, pageContext, sourceSetRestriction)
+//            }
+//        } ?: if (isPartial) {
+//            templateCommand(ResolveLinkGfmCommand(node.address)) {
+//                buildText(node.children, pageContext, sourceSetRestriction)
+//            }
+//        } else Unit
+//    }
 
     override fun StringBuilder.buildNewLine() {
         append("  \n")
     }
+
+//    override fun StringBuilder.buildPlatformDependent(
+//        content: PlatformHintedContent,
+//        pageContext: ContentPage,
+//        sourceSetRestriction: Set<DisplaySourceSet>?
+//    ) {
+//        buildPlatformDependentItem(content.inner, content.sourceSets, pageContext)
+//    }
+
+//    private fun StringBuilder.buildPlatformDependentItem(
+//        content: ContentNode,
+//        sourceSets: Set<DisplaySourceSet>,
+//        pageContext: ContentPage,
+//    ) {
+//        if (content is ContentGroup && content.children.firstOrNull { it is ContentTable } != null) {
+//            buildContentNode(content, pageContext, sourceSets)
+//        } else {
+//            val distinct = sourceSets.map {
+//                it to buildString { buildContentNode(content, pageContext, setOf(it)) }
+//            }.groupBy(Pair<DisplaySourceSet, String>::second, Pair<DisplaySourceSet, String>::first)
+//
+//            distinct.filter { it.key.isNotBlank() }.forEach { (text, platforms) ->
+//                append(" ")
+//                buildSourceSetTags(platforms.toSet())
+//                append(" $text ")
+//                buildNewLine()
+//            }
+//        }
+//    }
 
     override fun StringBuilder.buildResource(node: ContentEmbeddedResource, pageContext: ContentPage) {
         if (node.isImage()) {
@@ -147,21 +184,25 @@ class DocusaurusRenderer(
         }
     }
 
-//    override fun StringBuilder.buildDRILink(
-//        node: ContentDRILink,
-//        pageContext: ContentPage,
-//        sourceSetRestriction: Set<DisplaySourceSet>?
-//    ) {
-//        locationProvider.resolve(node.address, node.sourceSets, pageContext)?.let {
-//            buildLink(it) {
-//                buildText(node.children, pageContext, sourceSetRestriction)
-//            }
-//        } ?: if (isPartial) {
-//            templateCommand(ResolveLinkGfmCommand(node.address)) {
-//                buildText(node.children, pageContext, sourceSetRestriction)
-//            }
-//        } else Unit
-//    }
+    override fun StringBuilder.buildNavigation(page: PageNode) {
+        locationProvider.ancestors(page).asReversed().forEach { node ->
+            append("/")
+            if (node.isNavigable) buildLink(node, page)
+            else append(node.name)
+        }
+
+        buildNewParagraph()
+    }
+
+    override fun buildPage(page: ContentPage, content: (StringBuilder, ContentPage) -> Unit): String =
+        buildString {
+            buildDocusaurusHeader(page.title(locationProvider))
+            content(this, page)
+        }
+
+    override fun buildError(node: ContentNode) {
+        context.logger.warn("Docusaurus renderer has encountered problem. The unmatched node is $node")
+    }
 
     override suspend fun renderPage(page: PageNode) {
         val path by lazy {
@@ -196,17 +237,6 @@ class DocusaurusRenderer(
         }
     }
 
-    private fun StringBuilder.buildListItem(items: List<ContentNode>, pageContext: ContentPage) {
-        items.forEach {
-            if (it is ContentList) {
-                buildList(it, pageContext)
-            } else {
-                append("<li>")
-                append(buildString { it.build(this, pageContext, it.sourceSets) }.trim())
-                append("</li>")
-            }
-        }
-    }
 
     private fun parseDecorators(styles: Set<Style>) = buildString {
         styles.forEach {
@@ -240,8 +270,6 @@ class DocusaurusRenderer(
         buildLink(locationProvider.resolve(to, from)!!) {
             append(to.name)
         }
-
-    private fun String.withEntersAsHtml(): String = replace("\n", "<br>")
 
     private val PageNode.isNavigable: Boolean
         get() = this !is RendererSpecificPage || strategy != RenderingStrategy.DoNothing
