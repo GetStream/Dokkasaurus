@@ -10,7 +10,7 @@ ext["signing.keyId"] = ''
 ext["signing.password"] = ''
 ext["signing.secretKeyRingFile"] = ''
 
-def PUBLISH_VERSION = "0.1.7"
+def PUBLISH_VERSION = "0.1.8"
 def PUBLISH_GROUP_ID = "io.getstream"
 def PUBLISH_ARTIFACT_ID = "dokkasaurus"
 
