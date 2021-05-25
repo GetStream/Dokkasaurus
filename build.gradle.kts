@@ -27,6 +27,7 @@ dependencies {
     compileOnly("org.jetbrains.dokka:dokka-core:$dokkaVersion")
     implementation(kotlin("stdlib"))
     implementation("org.jetbrains.dokka:dokka-base:$dokkaVersion")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.1")
 
     testImplementation(kotlin("test-junit"))
     testImplementation("org.jetbrains.dokka:dokka-test-api:$dokkaVersion")
