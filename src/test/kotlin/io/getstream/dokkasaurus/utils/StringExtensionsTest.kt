@@ -27,8 +27,8 @@ internal class StringExtensionsTest {
 
     @ParameterizedTest
     @MethodSource("generateCamelToSnakeCaseArguments")
-    fun `String should be converted from camelCase to snake-case`(input: String, expectedResult: String) {
-        Assertions.assertEquals(expectedResult, input.camelToSnakeCase())
+    fun `String should be converted from camelCase to kebab-case`(input: String, expectedResult: String) {
+        Assertions.assertEquals(expectedResult, input.camelToKebabCase())
     }
 
     companion object {

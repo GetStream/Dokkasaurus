@@ -5,7 +5,7 @@ internal fun String.simpleScapeTags(): String {
     return this.replace("<", "&lt;").replace(">", "&gt;")
 }
 
-internal fun String.camelToSnakeCase(): String {
+internal fun String.camelToKebabCase(): String {
     return camelRegex.replace(this) {
         "-${it.value}"
     }.toLowerCase()
