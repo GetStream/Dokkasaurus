@@ -23,6 +23,13 @@ tasks {
     }
 }
 
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
+}
+
 dependencies {
     compileOnly("org.jetbrains.dokka:dokka-core:$dokkaVersion")
     implementation(kotlin("stdlib"))
@@ -31,5 +38,8 @@ dependencies {
 
     testImplementation(kotlin("test-junit"))
     testImplementation("org.jetbrains.dokka:dokka-test-api:$dokkaVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
+    testImplementation(platform("org.junit:junit-bom:5.7.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
 }
