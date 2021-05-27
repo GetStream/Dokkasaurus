@@ -7,7 +7,7 @@ This plugin creates Markdown files that can be used with Docussauros. Use this p
 The plugin is deployed to MavenCentra. You need to add `mavenCentral()` to your project and include it to your project (in the module level):
 
 ```
-dokkaPlugin("io.getstream:dokkasaurus:0.1.7")
+dokkaPlugin("io.getstream:dokkasaurus:0.1.9")
 ```
 
 For multi module projects, put the dokkaPlugin in every module that you would like
