@@ -3,6 +3,7 @@ package io.getstream.dokkasaurus.renderer
 import io.getstream.dokkasaurus.DokkasaurusPlugin
 import io.getstream.dokkasaurus.utils.Command.Companion.templateCommand
 import io.getstream.dokkasaurus.utils.ResolveLinkCommands
+import io.getstream.dokkasaurus.utils.camelToSnakeCase
 import io.getstream.dokkasaurus.utils.simpleScapeTags
 import org.jetbrains.dokka.DokkaException
 import org.jetbrains.dokka.base.renderers.DefaultRenderer
@@ -355,8 +356,8 @@ open class DocusaurusRenderer(
     }
 
     private fun PageNode.title(locationProvider: LocationProvider): String =
-        locationProvider.resolve(this)
+        (locationProvider.resolve(this)
             ?.substringAfterLast("/")
             ?.substringBeforeLast(".")
-            ?: this.name
+            ?: this.name).camelToSnakeCase()
 }
