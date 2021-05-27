@@ -26,14 +26,14 @@ internal class StringExtensionsTest {
     }
 
     @ParameterizedTest
-    @MethodSource("generateCamelToSnakeCaseArguments")
+    @MethodSource("generateCamelToKebabCaseArguments")
     fun `String should be converted from camelCase to kebab-case`(input: String, expectedResult: String) {
         Assertions.assertEquals(expectedResult, input.camelToKebabCase())
     }
 
     companion object {
         @JvmStatic
-        fun generateCamelToSnakeCaseArguments() = listOf(
+        fun generateCamelToKebabCaseArguments() = listOf(
             Arguments.of("a", "a"),
             Arguments.of("A", "a"),
             Arguments.of("ab", "ab"),
@@ -44,5 +44,4 @@ internal class StringExtensionsTest {
 
         )
     }
-
 }
