@@ -67,7 +67,7 @@ afterEvaluate {
                 groupId PUBLISH_GROUP_ID
                 artifactId PUBLISH_ARTIFACT_ID
                 version PUBLISH_VERSION
-                artifact("${buildDir}/libs/dokkasaurus-${version}.jar")
+                from components.java 
                 artifact javadocJar
                 artifact sourcesJar
 
